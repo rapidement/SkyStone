@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 @TeleOp
 public class Mattsfirstopmode extends OpMode {
@@ -33,6 +34,8 @@ public class Mattsfirstopmode extends OpMode {
         // arcade drive
         right.setPower(-gamepad1.left_stick_y-gamepad1.left_stick_x);
         left.setPower(gamepad1.left_stick_y-gamepad1.left_stick_x);
+        //right.setPower(gamepad1.left_stick_y+gamepad1.left_stick_x);
+        //left.setPower(-gamepad1.left_stick_y+gamepad1.left_stick_x);
 
         //Intake Motors
         left_trigger = gamepad1.left_trigger;
@@ -45,14 +48,11 @@ public class Mattsfirstopmode extends OpMode {
         }
         
         //hook
-        if (gamepad1.a){
-            left_servo.setPosition(left_servo.getPosition()+.01);
-
-        } else if (gamepad1.y){
-            left_servo.setPosition(left_servo.getPosition()-.01);
-
+        if (gamepad1.y){
+            left_servo.setPosition(left_servo.getPosition()+.02);
+        } else if (gamepad1.a){
+            left_servo.setPosition(left_servo.getPosition()-.02);
         }
-
 
         telemetry.addData("left.joystick.y",gamepad1.left_stick_y);
         telemetry.addData("right.joystick.y",gamepad1.right_stick_y);
