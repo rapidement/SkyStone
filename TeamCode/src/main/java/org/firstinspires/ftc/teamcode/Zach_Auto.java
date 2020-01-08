@@ -48,7 +48,7 @@ public class Zach_Auto extends OpMode {
         left_servo = hardwareMap.servo.get("left_servo");
         et = new ElapsedTime();
         encoder_start_l = left.getCurrentPosition();
-        gyro = hardwareMap.
+     //   gyro = hardwareMap.
 
         telemetry.addData("Status","running");
         telemetry.update();
