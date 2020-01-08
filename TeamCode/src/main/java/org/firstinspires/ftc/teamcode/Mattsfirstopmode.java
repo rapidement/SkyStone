@@ -46,7 +46,6 @@ public class Mattsfirstopmode extends OpMode {
             left_intake.setPower(-gamepad1.right_trigger);
             right_intake.setPower(gamepad1.right_trigger);
         }
-        
         //hook
         if (gamepad1.y){
             left_servo.setPosition(left_servo.getPosition()+.02);
