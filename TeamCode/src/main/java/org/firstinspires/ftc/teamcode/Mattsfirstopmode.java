@@ -21,6 +21,7 @@ public class Mattsfirstopmode extends OpMode {
 
     public void init(){
         left = hardwareMap.dcMotor.get("left");
+        //left.setDirection(DcMotor.Direction.REVERSE);  // makes it easier to program
         right = hardwareMap.dcMotor.get("right");
         left_intake = hardwareMap.dcMotor.get("left_intake");
         right_intake = hardwareMap.dcMotor.get("right_intake");
@@ -46,6 +47,7 @@ public class Mattsfirstopmode extends OpMode {
             left_intake.setPower(-gamepad1.right_trigger);
             right_intake.setPower(gamepad1.right_trigger);
         }
+
         //hook
         if (gamepad1.y){
             left_servo.setPosition(left_servo.getPosition()+.02);
