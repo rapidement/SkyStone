@@ -75,14 +75,14 @@ public class Zach_Auto_R extends OpMode {
             heading_change = heading_change - 360;
         }
 
-        // determine if we are finished with a stage, if so "promote"
-        if (stage == 1 & encoder_change > 1361){
+        // determine if we are finished with a stage, if so "promote" also switched Encoder Change from 1361 to 50
+        if (stage == 1 & encoder_change > 300){
             stage = 2;
             heading_start = heading;
         } else if (stage == 2 & heading_change < -84){
             stage = 3;
             encoder_start_l = left.getCurrentPosition();
-        } else if (stage == 3 & encoder_change > 4083){
+        } else if (stage == 3 & encoder_change > 1800){
             stage = -1;
         }
 
@@ -94,8 +94,8 @@ public class Zach_Auto_R extends OpMode {
             left.setPower(.5);
             right.setPower(.5);
         } else if (stage == 2) {   // turn right
-            left.setPower(.15);
-            right.setPower(-.15);
+            left.setPower(.25);
+            right.setPower(-.25);
         } else if (stage == 3){      // go straight
             left.setPower(.5);
             right.setPower(.5);

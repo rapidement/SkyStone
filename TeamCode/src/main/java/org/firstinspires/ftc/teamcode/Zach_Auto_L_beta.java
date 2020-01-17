@@ -7,15 +7,13 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-// for internal imu
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
-
 @Autonomous
-public class Zach_Auto_L extends OpMode {
+public class Zach_Auto_L_beta extends OpMode {
 
     DcMotor left;
     DcMotor right;
@@ -30,15 +28,14 @@ public class Zach_Auto_L extends OpMode {
     double encoder_start_l = 0.0;
     double encoder_change = 0.0;
 
-    double heading_start = 0.0;  // value at beginning of turning stage
-    double heading_change = 0.0;  // change in angle since started to turn
+    double heading_start = 0.0;
+    double heading_change = 0.0;
     double heading = 0.0;
 
-    long stage = 1;  // determines current behavior or robot
+    long stage = -1;
 
     public void init(){
 
-        // setting up the internal imu
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
         parameters.loggingEnabled = true;
@@ -52,7 +49,6 @@ public class Zach_Auto_L extends OpMode {
         left_intake = hardwareMap.dcMotor.get("left_intake");
         right_intake = hardwareMap.dcMotor.get("right_intake");
         left_servo = hardwareMap.servo.get("left_servo");
-
         et = new ElapsedTime();
         encoder_start_l = left.getCurrentPosition();
 
@@ -62,45 +58,45 @@ public class Zach_Auto_L extends OpMode {
 
     public void loop() {
 
-        elapsed_time = et.milliseconds() / 1000.0;  // convert to seconds
+        elapsed_time = et.milliseconds() / 1000.0;
         angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-        encoder_change = left.getCurrentPosition() - encoder_start_l;
         heading = angles.firstAngle;
+
+        encoder_change = left.getCurrentPosition() - encoder_start_l;
         heading_change = heading - heading_start;
 
-        // correct for the jump in angle change at 180/-180
         if (heading_change < -180){
             heading_change = heading_change + 360;
         } else if (heading_change > 180){
             heading_change = heading_change - 360;
         }
 
-        // determine if we are finished with a stage, if so "promote"
-        if (stage == 1 & encoder_change > 300){
+       if (stage == -1 & elapsed_time > 20 & elapsed_time < 22 ) {
+           stage = 1;
+       } else if (stage == 1 & encoder_change > 1361){
             stage = 2;
             heading_start = heading;
-        } else if (stage == 2 & heading_change > 84){
+       } else if (stage == 2 & heading_change < 84){
             stage = 3;
             encoder_start_l = left.getCurrentPosition();
-        } else if (stage == 3 & encoder_change > 1800){
+       } else if (stage == 3 & encoder_change > 4083){
             stage = -1;
-        }
+       }
 
-        //  autonomous behavior determined by stage
-        if (stage == -1) {         // stopped
+        //      auto stuff
+        if (stage == -1) {
             left.setPower(0.0);
             right.setPower(0.0);
-        } else if (stage == 1) {   // go straight
+        } else if (stage == 1) {
             left.setPower(.5);
             right.setPower(.5);
-        } else if (stage == 2) {   // turn left
-            left.setPower(-.25);
-            right.setPower(.25);
-        } else if (stage == 3){      // go straight
+        } else if (stage == 2) {
+            left.setPower(-.15);
+            right.setPower(.15);
+        } else if (stage == 3){
             left.setPower(.5);
             right.setPower(.5);
         }
-
         telemetry.addData("Et (sec)", "%f", elapsed_time);
         telemetry.addData("Stage"," %d", stage);
         telemetry.addData("Heading"," %.2f", heading);
