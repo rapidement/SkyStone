@@ -14,7 +14,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
 
-@Autonomous
+//@Autonomous
 public class Zach_Auto_R extends OpMode {
 
     DcMotor left;

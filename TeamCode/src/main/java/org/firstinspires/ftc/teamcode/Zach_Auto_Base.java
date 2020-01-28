@@ -15,7 +15,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
 
-@Autonomous
+//@Autonomous
 public class Zach_Auto_Base extends OpMode {
 
     DcMotor left = null;
@@ -41,7 +41,9 @@ public class Zach_Auto_Base extends OpMode {
 
     long turn_direction = 1;
     long target_color = 1; // 1 is red, 2 is blue
-    double initial_delay = 20.0;
+    double initial_delay = 17.5;
+    double stop_2 = 1800.0;
+    boolean timeInit = false;
 
     public void init(){
 
@@ -61,7 +63,6 @@ public class Zach_Auto_Base extends OpMode {
         left_servo = hardwareMap.servo.get("left_servo");
         colorSensor = hardwareMap.colorSensor.get("color_sensor");
 
-        et = new ElapsedTime();
         encoder_start_l = left.getCurrentPosition();
 
         telemetry.addData("Status","running");
@@ -69,6 +70,11 @@ public class Zach_Auto_Base extends OpMode {
     }
 
     public void loop() {
+
+        if (!timeInit) {
+            et = new ElapsedTime();
+            timeInit = true;
+        }
 
         elapsed_time = et.milliseconds() / 1000.0;  // convert to seconds
         angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
@@ -94,14 +100,14 @@ public class Zach_Auto_Base extends OpMode {
         if (stage == -1 & elapsed_time > initial_delay & elapsed_time < initial_delay + 2.0){
             stage = 1;
             encoder_start_l = left.getCurrentPosition();
-        } else if (stage == 1 & encoder_change > 1361){
+        } else if (stage == 1 & encoder_change > 287){
             stage = 2;
             heading_start = heading;
         } else if (stage == 2 & turn_direction * heading_change < -84){
             stage = 3;
             encoder_start_l = left.getCurrentPosition();
-        } else if (stage == 3 & last_color_ratio > 1.4 & color_ratio < last_color_ratio){
-        //} else if (stage == 3 & encoder_change > 4083){
+        //} else if (stage == 3 & last_color_ratio > 1.2){
+        } else if (stage == 3 & encoder_change > stop_2){
             stage = -1;
         }
 
@@ -110,14 +116,14 @@ public class Zach_Auto_Base extends OpMode {
             left.setPower(0.0);
             right.setPower(0.0);
         } else if (stage == 1) {   // go straight
-            left.setPower(.5);
-            right.setPower(.5);
+            left.setPower(.6);
+            right.setPower(.6);
         } else if (stage == 2) {   // turn right (if turn_direction = 1)
-            left.setPower(turn_direction * 0.15);
-            right.setPower(turn_direction * -0.15);
+            left.setPower(turn_direction * 0.25);
+            right.setPower(turn_direction * -0.25);
         } else if (stage == 3){      // go straight
-            left.setPower(.5);
-            right.setPower(.5);
+            left.setPower(.2);
+            right.setPower(.2);
         }
 
         telemetry.addData("Et (sec)", "%f", elapsed_time);
